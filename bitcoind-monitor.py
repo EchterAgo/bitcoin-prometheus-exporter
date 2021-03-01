@@ -284,6 +284,8 @@ def exception_count(e: Exception) -> None:
 
 
 def main():
+    http_started = False
+
     # Set up logging to look similar to bitcoin logs (UTC).
     logging.basicConfig(
         format="%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%dT%H:%M:%SZ"
@@ -294,8 +296,6 @@ def main():
     # Handle SIGTERM gracefully.
     signal.signal(signal.SIGTERM, sigterm_handler)
 
-    # Start up the server to expose the metrics.
-    start_http_server(addr=METRICS_ADDR, port=METRICS_PORT)
     while True:
         process_start = datetime.now()
 
@@ -312,6 +312,12 @@ def main():
         duration = datetime.now() - process_start
         PROCESS_TIME.inc(duration.total_seconds())
         logger.info("Refresh took %s seconds, sleeping for %s seconds", duration, REFRESH_SECONDS)
+
+        if not http_started:
+            # Start up the server to expose the metrics.
+            start_http_server(addr=METRICS_ADDR, port=METRICS_PORT)
+            logger.info(f"Started HTTP server on {METRICS_ADDR}:{METRICS_PORT}")
+            http_started = True
 
         time.sleep(REFRESH_SECONDS)
 
