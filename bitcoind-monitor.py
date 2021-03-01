@@ -33,13 +33,14 @@ from urllib.parse import quote
 import riprova
 
 from bitcoin.rpc import InWarmupError, Proxy
-from prometheus_client import start_http_server, Gauge, Counter
+from prometheus_client import start_http_server, Gauge, Counter, Info
 
 
 logger = logging.getLogger("bitcoin-exporter")
 
 
 # Create Prometheus metrics to track bitcoind stats.
+BITCOIN_INFO = Info('bitcoin', 'The chain the daemon runs on')
 BITCOIN_BLOCKS = Gauge("bitcoin_blocks", "Block height")
 BITCOIN_DIFFICULTY = Gauge("bitcoin_difficulty", "Difficulty")
 BITCOIN_PEERS = Gauge("bitcoin_peers", "Number of peers")
@@ -215,6 +216,7 @@ def refresh_metrics() -> None:
 
     banned = bitcoinrpc("listbanned")
 
+    BITCOIN_INFO.info({"chain": blockchaininfo["chain"], "coin": "BCH"})
     BITCOIN_UPTIME.set(uptime)
     BITCOIN_BLOCKS.set(blockchaininfo["blocks"])
     BITCOIN_PEERS.set(networkinfo["connections"])
