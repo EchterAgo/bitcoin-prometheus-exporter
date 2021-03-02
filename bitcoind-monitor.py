@@ -29,12 +29,12 @@ from typing import Dict
 from typing import List
 from typing import Union
 from urllib.parse import quote
+from wsgiref.simple_server import make_server
 
 import riprova
 
 from bitcoin.rpc import InWarmupError, Proxy
-from prometheus_client import start_http_server, Gauge, Counter, Info
-
+from prometheus_client import make_wsgi_app, Gauge, Counter, Info
 
 logger = logging.getLogger("bitcoin-exporter")
 
@@ -132,7 +132,6 @@ BITCOIN_RPC_PORT = os.environ.get("BITCOIN_RPC_PORT", "8332")
 BITCOIN_RPC_USER = os.environ.get("BITCOIN_RPC_USER")
 BITCOIN_RPC_PASSWORD = os.environ.get("BITCOIN_RPC_PASSWORD")
 BITCOIN_CONF_PATH = os.environ.get("BITCOIN_CONF_PATH")
-REFRESH_SECONDS = float(os.environ.get("REFRESH_SECONDS", "300"))
 METRICS_ADDR = os.environ.get("METRICS_ADDR", "")  # empty = any address
 METRICS_PORT = int(os.environ.get("METRICS_PORT", "8334"))
 RETRIES = int(os.environ.get("RETRIES", 5))
@@ -310,8 +309,6 @@ def exception_count(e: Exception) -> None:
 
 
 def main():
-    http_started = False
-
     # Set up logging to look similar to bitcoin logs (UTC).
     logging.basicConfig(
         format="%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%dT%H:%M:%SZ"
@@ -322,7 +319,9 @@ def main():
     # Handle SIGTERM gracefully.
     signal.signal(signal.SIGTERM, sigterm_handler)
 
-    while True:
+    app = make_wsgi_app()
+
+    def refresh_app(*args, **kwargs):
         process_start = datetime.now()
 
         # Allow riprova.MaxRetriesExceeded and unknown exceptions to crash the process.
@@ -331,21 +330,21 @@ def main():
         except riprova.exceptions.RetryError as e:
             logger.error("Refresh failed during retry. Cause: " + str(e))
             exception_count(e)
+        except bitcoin.rpc.JSONRPCError as e:
+            logger.debug("Bitcoin RPC error refresh", exc_info=True)
+            exception_count(e)
         except json.decoder.JSONDecodeError as e:
             logger.error("RPC call did not return JSON. Bad credentials? " + str(e))
             sys.exit(1)
 
         duration = datetime.now() - process_start
         PROCESS_TIME.inc(duration.total_seconds())
-        logger.info("Refresh took %s seconds, sleeping for %s seconds", duration, REFRESH_SECONDS)
+        logger.info("Refresh took %s seconds", duration)
 
-        if not http_started:
-            # Start up the server to expose the metrics.
-            start_http_server(addr=METRICS_ADDR, port=METRICS_PORT)
-            logger.info(f"Started HTTP server on {METRICS_ADDR}:{METRICS_PORT}")
-            http_started = True
+        return app(*args, **kwargs)
 
-        time.sleep(REFRESH_SECONDS)
+    httpd = make_server(METRICS_ADDR, METRICS_PORT, refresh_app)
+    httpd.serve_forever()
 
 
 if __name__ == "__main__":
