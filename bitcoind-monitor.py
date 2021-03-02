@@ -321,25 +321,30 @@ def main():
 
     app = make_wsgi_app()
 
+    last_refresh = None
+
     def refresh_app(*args, **kwargs):
+        nonlocal last_refresh
         process_start = datetime.now()
 
-        # Allow riprova.MaxRetriesExceeded and unknown exceptions to crash the process.
-        try:
-            refresh_metrics()
-        except riprova.exceptions.RetryError as e:
-            logger.error("Refresh failed during retry. Cause: " + str(e))
-            exception_count(e)
-        except bitcoin.rpc.JSONRPCError as e:
-            logger.debug("Bitcoin RPC error refresh", exc_info=True)
-            exception_count(e)
-        except json.decoder.JSONDecodeError as e:
-            logger.error("RPC call did not return JSON. Bad credentials? " + str(e))
-            sys.exit(1)
+        if not last_refresh or (process_start - last_refresh).total_seconds() > 5: # Limit updates to every 5 seconds
+            # Allow riprova.MaxRetriesExceeded and unknown exceptions to crash the process.
+            try:
+                refresh_metrics()
+            except riprova.exceptions.RetryError as e:
+                logger.error("Refresh failed during retry. Cause: " + str(e))
+                exception_count(e)
+            except bitcoin.rpc.JSONRPCError as e:
+                logger.debug("Bitcoin RPC error refresh", exc_info=True)
+                exception_count(e)
+            except json.decoder.JSONDecodeError as e:
+                logger.error("RPC call did not return JSON. Bad credentials? " + str(e))
+                sys.exit(1)
 
-        duration = datetime.now() - process_start
-        PROCESS_TIME.inc(duration.total_seconds())
-        logger.info("Refresh took %s seconds", duration)
+            duration = datetime.now() - process_start
+            PROCESS_TIME.inc(duration.total_seconds())
+            logger.info("Refresh took %s seconds", duration)
+            last_refresh = process_start
 
         return app(*args, **kwargs)
 
