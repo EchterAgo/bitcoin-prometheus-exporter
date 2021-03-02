@@ -78,6 +78,11 @@ BITCOIN_LATEST_BLOCK_TXS = Gauge(
     "bitcoin_latest_block_txs", "Number of transactions in latest block"
 )
 
+BITCOIN_TXRATE_1D = Gauge("bitcoin_txrate_1d", "TX per second over the last day")
+BITCOIN_TXRATE_7D = Gauge("bitcoin_txrate_7d", "TX per second over the last 7 days")
+BITCOIN_TXRATE_30D = Gauge("bitcoin_txrate_30d", "TX per second over the last 30 days")
+BITCOIN_TXCOUNT = Gauge("bitcoin_txcount", "Number of TX since the genesis block")
+
 BITCOIN_NUM_CHAINTIPS = Gauge("bitcoin_num_chaintips", "Number of known blockchain branches")
 
 BITCOIN_TOTAL_BYTES_RECV = Gauge("bitcoin_total_bytes_recv", "Total bytes received")
@@ -215,6 +220,9 @@ def refresh_metrics() -> None:
     nettotals = bitcoinrpc("getnettotals")
     rpcinfo = bitcoinrpc("getrpcinfo")
     dsprooflist = bitcoinrpc("getdsprooflist")
+    txstats1d = bitcoinrpc("getchaintxstats", 144)
+    txstats7d = bitcoinrpc("getchaintxstats", 1008)
+    txstats30d = bitcoinrpc("getchaintxstats", 30240)
     latest_block = get_block(str(blockchaininfo["bestblockhash"]))
     hashps_120 = float(bitcoinrpc("getnetworkhashps", 120))  # 120 is the default
     hashps_neg1 = float(bitcoinrpc("getnetworkhashps", -1))
@@ -245,6 +253,11 @@ def refresh_metrics() -> None:
 
     if networkinfo["warnings"]:
         BITCOIN_WARNINGS.inc()
+
+    BITCOIN_TXRATE_1D.set(txstats1d["txrate"])
+    BITCOIN_TXRATE_7D.set(txstats7d["txrate"])
+    BITCOIN_TXRATE_30D.set(txstats30d["txrate"])
+    BITCOIN_TXCOUNT.set(txstats1d["txcount"])
 
     BITCOIN_NUM_CHAINTIPS.set(chaintips)
 
