@@ -221,7 +221,7 @@ def refresh_metrics() -> None:
     dsprooflist = bitcoinrpc("getdsprooflist")
     txstats1d = bitcoinrpc("getchaintxstats", 144)
     txstats7d = bitcoinrpc("getchaintxstats", 1008)
-    txstats30d = bitcoinrpc("getchaintxstats", 30240)
+    txstats30d = bitcoinrpc("getchaintxstats", 4320)
     latest_block = get_block(str(blockchaininfo["bestblockhash"]))
     hashps_120 = float(bitcoinrpc("getnetworkhashps", 120))  # 120 is the default
     hashps_neg1 = float(bitcoinrpc("getnetworkhashps", -1))
