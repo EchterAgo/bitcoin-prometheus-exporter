@@ -1,34 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "6.4.1"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -42,19 +12,28 @@
       }
     ]
   },
+  "description": "Monitor your Bitcoin core node and aspects of the network.",
   "editable": true,
-  "gnetId": null,
+  "gnetId": 11274,
   "graphTooltip": 1,
-  "id": null,
+  "id": 9,
+  "iteration": 1615002913076,
   "links": [],
   "panels": [
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "dsproof-count": "dark-red"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
-      "description": "Number of blocks created per day using different trailing rates.",
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -63,7 +42,142 @@
         "x": 0,
         "y": 0
       },
-      "id": 18,
+      "hiddenSeries": false,
+      "id": 26,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:272",
+          "alias": "tx-count",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:2134",
+          "alias": "dsproof-count",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "bitcoin_mempool_usage{instance=\"$node\"}",
+          "interval": "",
+          "legendFormat": "bytes",
+          "refId": "A"
+        },
+        {
+          "expr": "bitcoin_mempool_bytes{instance=\"$node\"}",
+          "interval": "",
+          "legendFormat": "serialized-bytes",
+          "refId": "B"
+        },
+        {
+          "expr": "bitcoin_mempool_size{instance=\"$node\"}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "tx-count",
+          "refId": "C"
+        },
+        {
+          "expr": "bitcoin_dsproof_count{instance=\"$node\"}",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "dsproof-count",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Mempool",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:2210",
+          "format": "bytes",
+          "label": "Size",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:2211",
+          "format": "short",
+          "label": "Count",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 32,
       "legend": {
         "avg": false,
         "current": false,
@@ -77,39 +191,297 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.4.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1589",
+          "alias": "Total",
+          "yaxis": 2
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "floor(sum(rate(bitcoin_blocks[3h])) * 3600 * 24)",
-          "hide": false,
-          "legendFormat": "3h",
-          "refId": "C"
-        },
-        {
-          "expr": "floor(sum(rate(bitcoin_blocks[6h])) * 3600 * 24)",
-          "hide": false,
-          "legendFormat": "6h",
-          "refId": "E"
-        },
-        {
-          "expr": "floor(sum(rate(bitcoin_blocks[12h])) * 3600 * 24)",
-          "hide": false,
-          "legendFormat": "12h",
+          "expr": "bitcoin_txrate_1d{instance=\"$node\"}",
+          "interval": "",
+          "legendFormat": "1 day",
           "refId": "A"
         },
         {
-          "expr": "floor(sum(rate(bitcoin_blocks[7d])) * 3600 * 24)",
+          "expr": "bitcoin_txrate_7d{instance=\"$node\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "7 days",
+          "refId": "B"
+        },
+        {
+          "expr": "bitcoin_txrate_30d{instance=\"$node\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "30 days",
+          "refId": "C"
+        },
+        {
+          "expr": "bitcoin_txcount{instance=\"$node\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Total",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "TX Stats",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1138",
+          "decimals": null,
+          "format": "cps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1139",
+          "decimals": 2,
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "Size of latest block",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 22,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1415",
+          "alias": "last-block-txs",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "bitcoin_latest_block_size{instance=\"$node\"}",
+          "interval": "",
+          "legendFormat": "last-block-size",
+          "refId": "A"
+        },
+        {
+          "expr": "bitcoin_latest_block_txs{instance=\"$node\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "last-block-txs",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Last Block",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:2005",
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:2006",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "description": "Number of blocks created per day using different trailing rates.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 3,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 18,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:707",
+          "alias": "Target",
+          "fill": 0,
+          "fillGradient": 0
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "rate(bitcoin_blocks{instance=\"$node\"}[1d]) * 86400",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "1d",
+          "refId": "C"
+        },
+        {
+          "expr": "rate(bitcoin_blocks{instance=\"$node\"}[2d]) * 86400",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "2d",
+          "refId": "E"
+        },
+        {
+          "expr": "rate(bitcoin_blocks{instance=\"$node\"}[4d]) * 86400",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "4d",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(bitcoin_blocks{instance=\"$node\"}[7d]) * 86400",
+          "interval": "",
           "legendFormat": "7d",
           "refId": "B"
+        },
+        {
+          "expr": "144",
+          "interval": "",
+          "legendFormat": "Target",
+          "refId": "D"
         }
       ],
       "thresholds": [],
@@ -132,14 +504,16 @@
       },
       "yaxes": [
         {
-          "format": "short",
-          "label": null,
+          "$$hashKey": "object:5282",
+          "format": "none",
+          "label": "",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
+          "$$hashKey": "object:5283",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -158,107 +532,24 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
-      "description": "Difficulty value",
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      },
-      "id": 6,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "avg(bitcoin_difficulty)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "difficulty",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Difficulty",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "decimals": 1,
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "Prometheus",
       "description": "Estimated network hashes per second",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 8
+        "y": 16
       },
+      "hiddenSeries": false,
       "id": 8,
       "legend": {
         "avg": false,
@@ -274,9 +565,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.4.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -286,15 +578,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(bitcoin_hashps)",
+          "expr": "avg(bitcoin_hashps{instance=\"$node\"})",
           "format": "time_series",
+          "interval": "",
           "intervalFactor": 1,
           "legendFormat": "120-blocks",
           "refId": "B"
         },
         {
-          "expr": "avg(bitcoin_hashps_neg1)",
+          "expr": "avg(bitcoin_hashps_neg1{instance=\"$node\"})",
           "format": "time_series",
+          "interval": "",
           "intervalFactor": 1,
           "legendFormat": "last-difficulty",
           "refId": "C"
@@ -320,15 +614,17 @@
       },
       "yaxes": [
         {
-          "decimals": 0,
-          "format": "short",
-          "label": null,
+          "$$hashKey": "object:1320",
+          "decimals": null,
+          "format": "Hs",
+          "label": "",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:1321",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -347,16 +643,24 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "Prometheus",
       "description": "Value of the block transactions in BTC.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 8
+        "y": 16
       },
+      "hiddenSeries": false,
       "id": 2,
       "legend": {
         "avg": false,
@@ -372,9 +676,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.4.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -384,10 +689,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bitcoin_latest_block_value)",
+          "expr": "sum(bitcoin_latest_block_value{instance=\"$node\"})",
           "format": "time_series",
+          "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "BTC",
+          "legendFormat": "BCH",
           "refId": "A"
         }
       ],
@@ -411,6 +717,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:1584",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -419,6 +726,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:1585",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -437,23 +745,31 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
-      "description": "Number of tips seen in the chain.",
+      "datasource": "Prometheus",
+      "description": "Difficulty value",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 24
       },
-      "id": 12,
+      "hiddenSeries": false,
+      "id": 6,
       "legend": {
         "avg": false,
         "current": false,
         "max": false,
         "min": false,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -462,9 +778,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.4.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -474,10 +791,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(bitcoin_num_chaintips)",
+          "expr": "avg(bitcoin_difficulty{instance=\"$node\"})",
           "format": "time_series",
+          "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "tips",
+          "legendFormat": "difficulty",
           "refId": "A"
         }
       ],
@@ -485,7 +803,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Chain Branches",
+      "title": "Difficulty",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -501,7 +819,8 @@
       },
       "yaxes": [
         {
-          "decimals": 0,
+          "$$hashKey": "object:801",
+          "decimals": 1,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -510,7 +829,7 @@
           "show": true
         },
         {
-          "decimals": 0,
+          "$$hashKey": "object:802",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -529,34 +848,45 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "Prometheus",
+      "decimals": null,
       "description": "Sent and received traffic rates",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 24
       },
+      "hiddenSeries": false,
       "id": 10,
       "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.4.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -566,15 +896,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bitcoin_total_bytes_sent[5m]))",
+          "expr": "sum(irate(bitcoin_total_bytes_sent{instance=\"$node\"}[5m]))",
           "format": "time_series",
+          "interval": "",
           "intervalFactor": 1,
           "legendFormat": "sent",
           "refId": "A"
         },
         {
-          "expr": "-sum(irate(bitcoin_total_bytes_recv[10m]))",
+          "expr": "-sum(irate(bitcoin_total_bytes_recv{instance=\"$node\"}[5m]))",
           "format": "time_series",
+          "interval": "",
           "intervalFactor": 1,
           "legendFormat": "received",
           "refId": "B"
@@ -600,6 +932,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:620",
           "decimals": 0,
           "format": "Bps",
           "label": null,
@@ -609,6 +942,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:621",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -627,34 +961,47 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
-      "description": "The estimated smart fee for confirmation of transactions in a given number of blocks.",
+      "datasource": null,
+      "description": "Estimated size of the block and undo files",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          }
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 32
       },
-      "id": 4,
+      "hiddenSeries": false,
+      "id": 20,
       "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
-      "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.4.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -664,146 +1011,18 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(bitcoin_est_smart_fee_2)",
+          "expr": "bitcoin_size_on_disk{instance=\"$node\"}",
           "format": "time_series",
-          "interval": "2m",
-          "intervalFactor": 1,
-          "legendFormat": "2-blocks",
+          "interval": "",
+          "legendFormat": "Size",
           "refId": "A"
-        },
-        {
-          "expr": "avg(bitcoin_est_smart_fee_20)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "20-blocks",
-          "refId": "B"
-        },
-        {
-          "expr": "avg(bitcoin_est_smart_fee_3)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "3-blocks",
-          "refId": "C"
-        },
-        {
-          "expr": "avg(bitcoin_est_smart_fee_5)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "5-blocks",
-          "refId": "D"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Estimated Fee",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
-      "description": "The Bitcoin protocol and server versions.",
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 24
-      },
-      "id": 14,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "protocol",
-          "yaxis": 1
-        },
-        {
-          "alias": "server",
-          "yaxis": 2
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "avg(bitcoin_protocol_version)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "protocol",
-          "refId": "A"
-        },
-        {
-          "expr": "avg(bitcoin_server_version)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "server",
-          "refId": "B"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Versions",
+      "title": "Size on disk",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -819,17 +1038,19 @@
       },
       "yaxes": [
         {
-          "decimals": null,
-          "format": "none",
-          "label": "protocol version",
+          "$$hashKey": "object:1213",
+          "decimals": 2,
+          "format": "bytes",
+          "label": "",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
-          "format": "none",
-          "label": "server version",
+          "$$hashKey": "object:1214",
+          "format": "short",
+          "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
@@ -846,34 +1067,44 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "Prometheus",
       "description": "Number of peers that have been banned and the reason for the ban.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
+        "x": 12,
         "y": 32
       },
+      "hiddenSeries": false,
       "id": 16,
       "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.4.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -883,15 +1114,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "count(bitcoin_banned_until) by (reason)",
+          "expr": "count(bitcoin_banned_until{instance=\"$node\"}) by (reason)",
           "format": "time_series",
+          "interval": "",
           "intervalFactor": 1,
           "legendFormat": "ban - {{ reason }}",
           "refId": "B"
         },
         {
-          "expr": "sum(bitcoin_peers)",
+          "expr": "sum(bitcoin_peers{instance=\"$node\"})",
           "format": "time_series",
+          "interval": "",
           "intervalFactor": 1,
           "legendFormat": "peers",
           "refId": "A"
@@ -917,6 +1150,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:5114",
           "decimals": 0,
           "format": "none",
           "label": null,
@@ -926,6 +1160,309 @@
           "show": true
         },
         {
+          "$$hashKey": "object:5115",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "description": "Number of tips seen in the chain.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 40
+      },
+      "hiddenSeries": false,
+      "id": 12,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "avg(bitcoin_num_chaintips{instance=\"$node\"})",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "tips",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Chain Branches",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1135",
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1136",
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 40
+      },
+      "hiddenSeries": false,
+      "id": 28,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "bitcoin_rpc_active{instance=\"$node\"}",
+          "interval": "",
+          "legendFormat": "Active calls",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "RPC Info",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:105",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:106",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 48
+      },
+      "hiddenSeries": false,
+      "id": 30,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "bitcoin_dsproof_count{instance=\"$node\"}",
+          "interval": "",
+          "legendFormat": "Count",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "DSProofs",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:376",
+          "decimals": 0,
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:377",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -940,17 +1477,144 @@
       }
     }
   ],
-  "refresh": "5m",
-  "schemaVersion": 20,
+  "refresh": "10s",
+  "schemaVersion": 27,
   "style": "dark",
   "tags": [
     "bitcoin"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "BCH",
+          "value": "BCH"
+        },
+        "datasource": null,
+        "definition": "label_values(bitcoin_info, coin)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Coin",
+        "multi": false,
+        "name": "coin",
+        "options": [
+          {
+            "selected": true,
+            "text": "BCH",
+            "value": "BCH"
+          }
+        ],
+        "query": {
+          "query": "label_values(bitcoin_info, coin)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 0,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "main",
+          "value": "main"
+        },
+        "datasource": null,
+        "definition": "label_values(bitcoin_info{coin=\"$coin\"}, chain)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Chain",
+        "multi": false,
+        "name": "chain",
+        "options": [
+          {
+            "selected": true,
+            "text": "main",
+            "value": "main"
+          },
+          {
+            "selected": false,
+            "text": "scale",
+            "value": "scale"
+          },
+          {
+            "selected": false,
+            "text": "test",
+            "value": "test"
+          },
+          {
+            "selected": false,
+            "text": "test4",
+            "value": "test4"
+          }
+        ],
+        "query": {
+          "query": "label_values(bitcoin_info{coin=\"$coin\"}, chain)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 0,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "bitcoin.apollo.loping.net:8339",
+          "value": "bitcoin.apollo.loping.net:8339"
+        },
+        "datasource": null,
+        "definition": "label_values(bitcoin_info{coin=\"$coin\", chain=\"$chain\"}, instance)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Node",
+        "multi": false,
+        "name": "node",
+        "options": [
+          {
+            "selected": true,
+            "text": "bitcoin.apollo.loping.net:8339",
+            "value": "bitcoin.apollo.loping.net:8339"
+          }
+        ],
+        "query": {
+          "query": "label_values(bitcoin_info{coin=\"$coin\", chain=\"$chain\"}, instance)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 0,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
-    "from": "now-1w",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -979,7 +1643,7 @@
     ]
   },
   "timezone": "",
-  "title": "Bitcoin",
-  "uid": "OTLC2jHWz",
-  "version": 1
+  "title": "Bitcoin Cash Node",
+  "uid": "JQrN-nUGk",
+  "version": 40
 }
