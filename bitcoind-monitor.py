@@ -33,7 +33,7 @@ from wsgiref.simple_server import make_server
 
 import riprova
 
-from bitcoin.rpc import InWarmupError, Proxy
+from bitcoin.rpc import InWarmupError, Proxy, JSONRPCError
 from prometheus_client import make_wsgi_app, Gauge, Counter, Info
 
 logger = logging.getLogger("bitcoin-exporter")
@@ -329,7 +329,7 @@ def main():
             except riprova.exceptions.RetryError as e:
                 logger.error("Refresh failed during retry. Cause: " + str(e))
                 exception_count(e)
-            except bitcoin.rpc.JSONRPCError as e:
+            except JSONRPCError as e:
                 logger.debug("Bitcoin RPC error refresh", exc_info=True)
                 exception_count(e)
             except json.decoder.JSONDecodeError as e:
