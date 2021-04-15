@@ -44,9 +44,6 @@ BITCOIN_INFO = Info('bitcoin', 'The chain the daemon runs on')
 BITCOIN_BLOCKS = Gauge("bitcoin_blocks", "Block height")
 BITCOIN_DIFFICULTY = Gauge("bitcoin_difficulty", "Difficulty")
 BITCOIN_PEERS = Gauge("bitcoin_peers", "Number of peers")
-BITCOIN_HASHPS_NEG1 = Gauge(
-    "bitcoin_hashps_neg1", "Estimated network hash rate per second since the last difficulty change"
-)
 BITCOIN_HASHPS_1 = Gauge(
     "bitcoin_hashps_1", "Estimated network hash rate per second for the last block"
 )
@@ -224,7 +221,6 @@ def refresh_metrics() -> None:
     txstats30d = bitcoinrpc("getchaintxstats", 4320)
     latest_block = get_block(str(blockchaininfo["bestblockhash"]))
     hashps_120 = float(bitcoinrpc("getnetworkhashps", 120))  # 120 is the default
-    hashps_neg1 = float(bitcoinrpc("getnetworkhashps", -1))
     hashps_1 = float(bitcoinrpc("getnetworkhashps", 1))
 
     banned = bitcoinrpc("listbanned")
@@ -235,7 +231,6 @@ def refresh_metrics() -> None:
     BITCOIN_PEERS.set(networkinfo["connections"])
     BITCOIN_DIFFICULTY.set(blockchaininfo["difficulty"])
     BITCOIN_HASHPS.set(hashps_120)
-    BITCOIN_HASHPS_NEG1.set(hashps_neg1)
     BITCOIN_HASHPS_1.set(hashps_1)
     BITCOIN_SERVER_VERSION.set(networkinfo["version"])
     BITCOIN_PROTOCOL_VERSION.set(networkinfo["protocolversion"])
