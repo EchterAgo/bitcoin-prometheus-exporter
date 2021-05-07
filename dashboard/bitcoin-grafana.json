@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": 11274,
   "graphTooltip": 1,
-  "id": 9,
-  "iteration": 1615002913076,
+  "id": 15,
+  "iteration": 1620371223356,
   "links": [],
   "panels": [
     {
@@ -156,7 +156,12 @@
       }
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "1 day": "light-green",
+        "30 days": "light-blue",
+        "6 hours": "dark-green",
+        "7 days": "dark-blue"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
@@ -210,31 +215,38 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "bitcoin_txrate_1d{instance=\"$node\"}",
+          "expr": "rate(bitcoin_txcount{instance=\"$node\"}[6h])",
+          "hide": false,
           "interval": "",
-          "legendFormat": "1 day",
+          "legendFormat": "6 hours",
           "refId": "A"
         },
         {
-          "expr": "bitcoin_txrate_7d{instance=\"$node\"}",
-          "hide": false,
+          "expr": "rate(bitcoin_txcount{instance=\"$node\"}[1d])",
           "interval": "",
-          "legendFormat": "7 days",
+          "legendFormat": "1 day",
           "refId": "B"
         },
         {
-          "expr": "bitcoin_txrate_30d{instance=\"$node\"}",
+          "expr": "rate(bitcoin_txcount{instance=\"$node\"}[7d])",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "7 days",
+          "refId": "C"
+        },
+        {
+          "expr": "rate(bitcoin_txcount{instance=\"$node\"}[30d])",
           "hide": false,
           "interval": "",
           "legendFormat": "30 days",
-          "refId": "C"
+          "refId": "D"
         },
         {
           "expr": "bitcoin_txcount{instance=\"$node\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "Total",
-          "refId": "D"
+          "refId": "E"
         }
       ],
       "thresholds": [],
@@ -584,14 +596,6 @@
           "intervalFactor": 1,
           "legendFormat": "120-blocks",
           "refId": "B"
-        },
-        {
-          "expr": "avg(bitcoin_hashps_neg1{instance=\"$node\"})",
-          "format": "time_series",
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "last-difficulty",
-          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -1477,7 +1481,7 @@
       }
     }
   ],
-  "refresh": "10s",
+  "refresh": false,
   "schemaVersion": 27,
   "style": "dark",
   "tags": [
@@ -1526,8 +1530,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "main",
-          "value": "main"
+          "text": "scale",
+          "value": "scale"
         },
         "datasource": null,
         "definition": "label_values(bitcoin_info{coin=\"$coin\"}, chain)",
@@ -1540,12 +1544,12 @@
         "name": "chain",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "main",
             "value": "main"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "scale",
             "value": "scale"
           },
@@ -1577,9 +1581,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "bitcoin.apollo.loping.net:8339",
-          "value": "bitcoin.apollo.loping.net:8339"
+          "selected": false,
+          "text": "bitcoin.apollo.loping.net:38339",
+          "value": "bitcoin.apollo.loping.net:38339"
         },
         "datasource": null,
         "definition": "label_values(bitcoin_info{coin=\"$coin\", chain=\"$chain\"}, instance)",
@@ -1593,8 +1597,8 @@
         "options": [
           {
             "selected": true,
-            "text": "bitcoin.apollo.loping.net:8339",
-            "value": "bitcoin.apollo.loping.net:8339"
+            "text": "bitcoin.apollo.loping.net:38339",
+            "value": "bitcoin.apollo.loping.net:38339"
           }
         ],
         "query": {
@@ -1614,8 +1618,8 @@
     ]
   },
   "time": {
-    "from": "now-24h",
-    "to": "now"
+    "from": "2021-04-18T07:03:51.043Z",
+    "to": "2021-05-07T07:21:01.367Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -1645,5 +1649,5 @@
   "timezone": "",
   "title": "Bitcoin Cash Node",
   "uid": "JQrN-nUGk",
-  "version": 40
+  "version": 5
 }
