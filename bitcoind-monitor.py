@@ -197,11 +197,12 @@ def bitcoinrpc(*args) -> RpcResult:
     return result
 
 
-def get_block(block_hash: str):
+@lru_cache(maxsize=1)
+def getblockstats(block_hash: str):
     try:
-        block = bitcoinrpc("getblock", block_hash, 2)
+        block = bitcoinrpc("getblockstats", block_hash, ["total_size", "txs", "height", "ins", "outs", "total_out"])
     except Exception:
-        logger.exception("Failed to retrieve block " + block_hash + " from bitcoind.")
+        logger.exception("Failed to retrieve block " + block_hash + " statistics from bitcoind.")
         return None
     return block
 
@@ -219,7 +220,7 @@ def refresh_metrics() -> None:
     txstats1d = bitcoinrpc("getchaintxstats", 144)
     txstats7d = bitcoinrpc("getchaintxstats", 1008)
     txstats30d = bitcoinrpc("getchaintxstats", 4320)
-    latest_block = get_block(str(blockchaininfo["bestblockhash"]))
+    latest_blockstats = getblockstats(str(blockchaininfo["bestblockhash"]))
     hashps_120 = float(bitcoinrpc("getnetworkhashps", 120))  # 120 is the default
     hashps_1 = float(bitcoinrpc("getnetworkhashps", 1))
 
@@ -269,22 +270,13 @@ def refresh_metrics() -> None:
     BITCOIN_TOTAL_BYTES_RECV.set(nettotals["totalbytesrecv"])
     BITCOIN_TOTAL_BYTES_SENT.set(nettotals["totalbytessent"])
 
-    if latest_block is not None:
-        BITCOIN_LATEST_BLOCK_SIZE.set(latest_block["size"])
-        BITCOIN_LATEST_BLOCK_TXS.set(latest_block["nTx"])
-        BITCOIN_LATEST_BLOCK_HEIGHT.set(latest_block["height"])
-        inputs, outputs = 0, 0
-        value = 0
-        for tx in latest_block["tx"]:
-            i = len(tx["vin"])
-            inputs += i
-            o = len(tx["vout"])
-            outputs += o
-            value += sum(o["value"] for o in tx["vout"])
-
-        BITCOIN_LATEST_BLOCK_INPUTS.set(inputs)
-        BITCOIN_LATEST_BLOCK_OUTPUTS.set(outputs)
-        BITCOIN_LATEST_BLOCK_VALUE.set(value)
+    if latest_blockstats is not None:
+        BITCOIN_LATEST_BLOCK_SIZE.set(latest_blockstats["total_size"])
+        BITCOIN_LATEST_BLOCK_TXS.set(latest_blockstats["txs"])
+        BITCOIN_LATEST_BLOCK_HEIGHT.set(latest_blockstats["height"])
+        BITCOIN_LATEST_BLOCK_INPUTS.set(latest_blockstats["ins"])
+        BITCOIN_LATEST_BLOCK_OUTPUTS.set(latest_blockstats["outs"])
+        BITCOIN_LATEST_BLOCK_VALUE.set(latest_blockstats["total_out"])
 
     # Subtract one because we don't want to count the "getrpcinfo" call itself
     BITCOIN_RPC_ACTIVE.set(len(rpcinfo["active_commands"]) - 1)
